@@ -8,23 +8,27 @@ const App = () => {
   const [page, setPage] = useState(1);
 
   const fetchProjects = async () => {
-    const res = await axios.get(
-      `http://localhost:5000/api/projects?sortBy=${sortBy}&page=${page}`
-    );
-    const data = await res.data;
-    setProjects(data);
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/projects?sortBy=${sortBy}&page=${page}`
+      );
+      const data = await res.data;
+      console.log(data);
+      setProjects(data);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
   };
 
   useEffect(() => {
     fetchProjects();
   }, [sortBy, page]);
 
-  console.log(projects);
-
   return (
     <div className="App">
       <div className="outerBox">
         <div className="tableOutbox">
+          {/* Select Field .... */}
           <div className="selectbox">
             <h3 className="text">Projects</h3>
             <select
@@ -38,6 +42,7 @@ const App = () => {
               <option value="title">Order by Project Title</option>
             </select>
           </div>
+          {/* Table Field .... */}
           <div className="table">
             <table>
               <thead>
@@ -48,19 +53,28 @@ const App = () => {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((p, i) => (
-                  <tr key={i}>
-                    <td>{p.project_title}</td>
-                    <td>{p.username}</td>
-                    <td>{p.category_name}</td>
+                {projects.length > 0 ? (
+                  projects.map((p, i) => (
+                    <tr key={i}>
+                      <td>{p.project_title}</td>
+                      <td>{p.username}</td>
+                      <td>{p.category_name}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" style={{ textAlign: "center" }}>
+                      No Projects Found
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
         </div>
+        {/* Pagination Field .... */}
         <div className="pagination">
-          <button onClick={() => setPage((p) => Math.max(p - 1, 1))}>
+          <button onClick={() => setPage((p) => p - 1)} disabled={page === 1}>
             Prev
           </button>
           <span>{page}</span>

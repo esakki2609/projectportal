@@ -4,7 +4,7 @@ const db = require('../db');
 
 router.get('/', async (req, res) => {
   const { page = 1, sortBy = 'recent' } = req.query;
-  const limit = 2;
+  const limit = 3;
   const offset = (page - 1) * limit;
 
   let orderBy = 'p.created_at DESC';
